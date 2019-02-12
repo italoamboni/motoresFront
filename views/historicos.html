@@ -1,0 +1,112 @@
+<div class="container">
+    <div style="margin-top: 10px; margin-bottom: 20px;">
+        <h4 style="text-align: center">{{tituloApp}}</h4>
+    </div>
+    <form class="form-inline my-2 my-md-0">
+            <input ng-model="criterioDeBusca" class="form-control mr-sm-2" type="search" placeholder="Busca Rápida" aria-label="Busca">
+    </form>
+  
+    <div class="alert-danger">{{mensagemDeErro}}</div>
+
+    <table class="table table-striped" ng-show="historicos.length">
+        <thead>
+            <th>
+                <a href="" ng-click="ordenarPor('idModelo')">Cód.</a>
+            </th>
+            <th>
+                </a>Descrição</th>
+            <th>
+                <a href="" ng-click="ordenarPor('dataEntrada')">Data Histórico</a>
+            </th>
+            <th>Funcionário</th>
+            <th>Cód.Motor e Potência</th>
+            <th>Ações</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="elemento in historicos | filter:criterioDeBusca | orderBy:campoParaOrdenacao:direcaoDaOrdenacao" ng-class="{'cor-linha negrito': elemento.selecionado}">
+                <td style="width: 5%">{{elemento.idHistorico}}</td>
+                <td>{{elemento.descricao | ellipsis}}</td>
+                <td>{{elemento.dataFato | date:'dd/MM/yyyy'}}</td>
+                <td>{{elemento.funcionario.nome | ellipsis}}</td>
+                <td>{{elemento.motor.idMotor + '-' + elemento.motor.potencia}}</td>
+                <td>
+                    <a href="" ng-click="removerHistorico(elemento)">
+                        <span style="padding: 3px;" title="Remover historico" class="fa fa-trash"></span>
+                    </a>
+                    <a href="" ng-click="editarHistorico(elemento)">
+                        <span style="padding: 3px;" title="Editar historico" class="fa fa-pencil" data-toggle="modal" data-target="#historicoModal"></span>
+                    </a>
+                </td>
+        </tbody>
+    </table>
+
+    <h4 style="text-align: center" ng-show="!historicos.length">Não existem históricos a serem demonstrados. Clique em 'Novo Histórico' para adicionar!</h4>
+
+    <div class="modal fade" id="historicoModal" tabindex="-1" role="dialog" aria-labelledby="historicoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="historicoModalLabel">{{!historico.idHistorico ? 'Adicionando Histórico' : 'Editando Histórico'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="historicoForm" name="historicoForm">
+                        <textarea ng-model="historico.descricao" ng-required="true" ng-minlength="5" class="form-control" type="text" name="descricao"
+                            id="descricao" placeholder="descrição do histórico"></textarea>
+
+                        <div class="form-group">
+                            <label for="motores">Selecione o motor:</label>
+                            <select id="motores" class="custom-select" ng-model="historico.motor" ng-required="true">
+                                <option value="">Selecione o motor</option>
+                                <option ng-repeat="motor in motores | orderBy:'nome'" ng-value="motor" ng-selected="historico.motor.idMotor === motor.idMotor">
+                                    {{motor.idMotor + '-' + motor.potencia}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="funcionarios">funcionário:</label>
+                            <select id="funcionarios" class="custom-select" ng-model="historico.funcionario" ng-required="true">
+                                <option value="">Selecione o funcionário</option>
+                                <option ng-repeat="funcionario in funcionarios | orderBy:'nome'" ng-value="funcionario" ng-selected="historico.funcionario.idFuncionario === funcionario.idFuncionario">
+                                    {{funcionario.nome}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <div class="form-group col-4">
+                                <label>Data do Fato: </label>
+                                <input ng-model="historico.dataFato" ng-required="true" class="form-control" type="date" name="dataFato" id="dataFato" placeholder="yyyy-MM-dd"
+                                required>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div ng-messages="historicoForm.descricao.$error" ng-show="historicoForm.descricao.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'descrição do histórico'!
+                        </div>
+                        <div ng-message="minlength" class="alert alert-danger">
+                            O campo 'descrição do histórico' deve conter no minímo 3 caracteres!
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-success" ng-click="adicionarHistorico(historico)" ng-disabled="historicoForm.$invalid"
+                            data-dismiss="modal">Salvar Histórico!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-inline">
+            <div class="form-row align-items-center">
+                <button ng-click="historico = {}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#historicoModal">
+                    Novo Histórico!
+                </button>
+            </div>
+    </form> 
+</div>

@@ -1,0 +1,151 @@
+<div class="container">
+    <div style="margin-top: 10px; margin-bottom: 20px;">
+        <h4 style="text-align: center">{{tituloApp}}</h4>
+    </div>
+
+    <form class="form-inline my-2 my-md-0">
+        <input ng-model="criterioDeBusca" class="form-control mr-sm-2" type="search" placeholder="Busca rápida" aria-label="Busca">
+    </form>
+  
+    <div class="alert-danger">{{mensagemDeErro}}</div>
+
+    <table class="table table-striped" ng-show="motores.length">
+        <thead>
+            <th>
+                <a href="" ng-click="ordenarPor('idMotor')">Cód.</a>
+            </th>
+            <th>
+                <a href="" ng-click="ordenarPor('potencia')">Potência</a>
+            </th>
+            <th>Tensão</th>
+            <th>RPM</th>
+            <th>Corrente</th>
+            <th>
+                <a href="" ng-click="ordenarPor('marca.nome')">Marca</a>
+            </th>
+            <th>
+                <a href="" ng-click="ordenarPor('modelo.modeloCarcaca')">Carcaça</a>
+            </th>
+            <th>Local</th>
+            <th>Ações</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="elemento in motores | filter:criterioDeBusca | orderBy:campoParaOrdenacao:direcaoDaOrdenacao" ng-class="{'cor-linha negrito': elemento.selecionado}">
+
+                <td style="width: 5%">{{elemento.idMotor}}</td>
+                <td>{{elemento.potencia}}</td>
+                <td>{{elemento.tensao}}</td>
+                <td>{{elemento.rpm}}</td>
+                <td>{{elemento.corrente}}</td>
+                <td>{{elemento.marca.nome | citacao}}</td>
+                <td>{{elemento.modelo.modeloCarcaca}}</td>
+                <td>{{elemento.localizacao | ellipsis}}</td>
+                <td>
+                    <a href="" ng-click="removerMotor(elemento)">
+                        <span style="padding: 3px;" title="Remover motor" class="fa fa-trash"></span>
+                    </a>
+                    <a href="" ng-click="editarMotor(elemento)">
+                        <span style="padding: 3px;" title="Editar motor" class="fa fa-pencil" data-toggle="modal" data-target="#motorModal"></span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4 style="text-align: center" ng-show="!motores.length">Não existem motores a serem demonstrados. Clique em 'Novo Motor' para adicionar!</h4>
+
+    <div class="modal fade" id="motorModal" tabindex="-1" role="dialog" aria-labelledby="motorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="motorModalLabel">{{!motor.idMotor ? 'Adicionando Motor' : 'Editando motor'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <form id="motorForm" name="motorForm">
+
+                        <input ng-model="motor.potencia" ng-required="true" ng-maxlength="10" class="form-control" type="text" name="potencia" id="potencia"
+                            placeholder="potência-cv">
+
+                        <input ng-model="motor.tensao" ng-required="true" ng-maxlength="20" class="form-control" type="text" name="tensao" id="tensao"
+                            placeholder="tensão">
+
+                        <input ng-model="motor.rpm" ng-required="true" ng-minlength="3" class="form-control" type="text" name="rpm" id="rpm" placeholder="rotação por minuto">
+
+                        <input ng-model="motor.corrente" ng-required="true" ng-maxlength="5" class="form-control" type="text" name="corrente" id="corrente"
+                            placeholder="corrente-amperes">
+
+                        <select id="marcas" class="custom-select" ng-model="motor.marca" ng-required="true">
+                            <option value="">Selecione a Marca</option>
+                            <option ng-repeat="marca in marcas | orderBy:'nome'" ng-value="marca" ng-selected="motor.marca.idMarca == marca.idMarca">
+                                {{marca.nome}}
+                            </option>
+                        </select>
+
+                        <select id="modelos" class="custom-select" ng-model="motor.modelo" ng-required="true">
+                            <option value="">Selecione o Modelo de Carcaça</option>
+                            <option ng-repeat="modelo in modelos | orderBy:'nome'" ng-value="modelo" ng-selected="motor.modelo.idModelo == modelo.idModelo">
+                                {{modelo.modeloCarcaca}}
+                            </option>
+                        </select>
+                        
+                        <input ng-model="motor.localizacao" ng-required="true" ng-maxlength="50" class="form-control" type="text" name="localizacao" id="localizacao" placeholder="localização do motor">
+
+                    </form>
+
+                    <div ng-messages="motorForm.potencia.$error" ng-show="motorForm.potencia.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'potência'!
+                        </div>
+                    </div>
+
+                    <div ng-messages="motorForm.tensao.$error" ng-show="motorForm.tensao.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'tensão'!
+                        </div>
+                    </div>
+
+                    <div ng-messages="motorForm.rpm.$error" ng-show="motorForm.rpm.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'rotação por minuto-RPM'!
+                        </div>
+                        <div ng-message="minlength" class="alert alert-danger">
+                            O campo 'rotação por minuto-RPM' deve possuir no mínimo 3 caracteres!
+                        </div>
+                    </div>
+
+                    <div ng-messages="motorForm.corrente.$error" ng-show="motorForm.corrente.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'corrente-amperes'!
+                        </div>
+                    </div>
+                    <div ng-messages="motorForm.localizacao.$error" ng-show="motorForm.localizacao.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'localização do motor'! 
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+
+                    <button type="button" class="btn btn-success" ng-click="adicionarMotor(motor)" ng-disabled="motorForm.$invalid" data-dismiss="modal">Salvar Motor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <form class="form-inline">
+        <div class="form-row align-items-center">
+            <button ng-click="motor = {}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#motorModal">
+                Novo Motor!
+            </button>
+        </div>
+    </form>
+</div>

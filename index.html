@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="./img/motor-eletrico.ico" type="image/x-icon">
+    <title>Controle de Motores Elétricos</title>
+ 
+
+    <link rel="stylesheet" href="./lib/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="./lib/bootstrap/open-iconic-bootstrap.css">
+    <link rel="stylesheet" href="./lib/font-awesome/font-awesome.css">
+    <link rel="stylesheet" href="./css/aplicacao.css">
+
+    <script src="./lib/jquery/jquery-3.3.1.slim.min.js"></script>
+    <script src="./lib/bootstrap/bootstrap.min.js"></script>
+    <script src="./lib/angular/angular.js"></script>
+    <script src="./lib/angular/angular-messages.js"></script>
+    
+    <script src="./lib/angular/angular-locale_pt-br.js"></script>
+    <script src="./lib/angular/angular-route.js"></script>
+
+    <script src="./js/app.js"></script>
+    <script src="./js/config/configAPIService.js"></script>
+    <script src="./js/config/routeProviderConfig.js"></script>
+
+    <script src="./js/controllers/homeController.js"></script>
+    <script src="./js/controllers/indexController.js"></script>
+    <script src="./js/controllers/modelosController.js"></script>
+    <script src="./js/controllers/marcasController.js"></script>
+   
+    <script src="./js/controllers/motoresController.js"></script>
+    <script src="./js/controllers/funcionariosController.js"></script>
+    <script src="./js/controllers/manutencoesController.js"></script>
+    <script src="./js/controllers/historicosController.js"></script>
+
+    <script src="./js/services/marcasAPIService.js"></script>
+    <script src="./js/services/modelosAPIService.js"></script>
+    <script src="./js/services/motoresAPIService.js"></script>
+    <script src="./js/services/funcionariosAPIService.js"></script>
+    <script src="./js/services/manutencoesAPIService.js"></script>
+    <script src="./js/services/historicosAPIService.js"></script>
+
+    <script src="./js/filters/citacaoFilter.js"></script>
+    <script src="./js/filters/ellipsisFilter.js"></script>
+    <script src="./js/filters/nomeFilter.js"></script>
+</head>
+
+<body ng-controller="indexController">
+    <!--
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">
+            <span class="oi oi-home iconic-md"></span> Sistema de Controle de Motores Elétricos</a>
+        <ul class="navbar-nav mr-auto">
+            <span class="iconic iconic-book iconic-sm" title="book" aria-hidden="true"></span>
+        </ul>
+    </nav>
+  -->   
+    <nav class="navbar navbar-dark bg-primary fixed-top fonte-tabela">
+        
+        <a class="navbar-brand" href="#"><span class="oi oi-home iconic-md"></span></a>
+        <a class="navbar-brand" href="#!/marcas" >Marcas</a>
+        <a class="navbar-brand" href="#!/modelos" >Modelos de Carcaça</a>
+        <a class="navbar-brand" href="#!/motores" >Motores</a>
+        <a class="navbar-brand" href="#!/funcionarios" >Funcionários</a>
+        <a class="navbar-brand" href="#!/manutencoes" >Manutenções</a>
+        <a class="navbar-brand" href="#!/historicos" >Históricos</a>
+    
+    </nav>
+    
+    <div class="container-fluid div-margin" style="width: 70%;">
+        <ng-view></ng-view>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div ng-include="'rodape.html'"></div>
+        </div>
+    </footer>
+</body>
+</html>

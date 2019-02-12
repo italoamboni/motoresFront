@@ -1,0 +1,133 @@
+<div class="container-fluid">
+    <div style="margin-top: 10px; margin-bottom: 20px;">
+        <h4 style="text-align: center">{{tituloApp}}</h4>
+    </div>
+
+    <form class="form-inline my-2 my-md-0">
+        <input ng-model="criterioDeBusca" class="form-control mr-sm-2" type="search" placeholder="Busca rápida" aria-label="Busca">
+    </form>
+
+    <div class="alert-danger">{{mensagemDeErro}}</div>
+
+    <table class="table table-striped" ng-show="manutencoes.length">
+        <thead>
+            <th>Cód.</th>
+            <th>Descrição</th>
+            <th>Local</th>
+            <th>Valor</th>
+            <th>
+                <a href="" ng-click="ordenarPor('dataEntrada')">Dt Entrada</a>
+            </th>
+            <th>
+                <a href="" ng-click="ordenarPor('dataRetorno')">Dt Retorno</a>
+            </th>
+            <th>
+                <a href="" ng-click="ordenarPor('manutencao.funcionario.nome')">Funcio.</a>
+            </th>
+            <th>Cód. Motor e Potência</th>
+            <th>Ações</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="elemento in manutencoes | filter:criterioDeBusca | orderBy:campoParaOrdenacao:direcaoDaOrdenacao" ng-class="{'cor-linha negrito': elemento.selecionado}">
+                <td style="width: 5%">{{elemento.idManutencao}}</td>
+                <td>{{elemento.descricao | ellipsis}}</td>
+                <td>{{elemento.local}}</td>
+                <td>{{elemento.valor}}</td>
+                <td>{{elemento.dataEntrada | date:'dd/MM/yyyy'}}</td>
+                <td>{{elemento.dataRetorno | date:'dd/MM/yyyy'}}</td>
+                <td>{{elemento.funcionario.nome}}</td>
+                <td>{{elemento.motor.idMotor + '-' + elemento.motor.potencia}}</td>
+                <td>
+                    <a href="" ng-click="removerManutencao(elemento)">
+                        <span style="padding: 3px;" title="Remover manutencao" class="fa fa-trash"></span>
+                    </a>
+                    <a href="" ng-click="editarManutencao(elemento)">
+                        <span style="padding: 3px;" title="Editar manutencao" class="fa fa-pencil" data-toggle="modal" data-target="#manutencaoModal"></span>
+                    </a>
+                </td>
+        </tbody>
+    </table>
+
+    <h4 style="text-align: center" ng-show="!manutencoes.length">Não existem manutenções a serem demonstradas. Clique em 'Nova Manutenção' para adicionar!</h4>
+
+    <div class="modal fade" id="manutencaoModal" tabindex="-1" role="dialog" aria-labelledby="manutencaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manutencaoModalLabel">{{!manutencao.idManutencao ? 'Adicionando Manutenção' : 'Editando Manutenção'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="manutencaoForm" name="manutencaoForm">
+
+                        <textarea ng-model="manutencao.descricao" ng-required="true" ng-minlength="5" class="form-control" type="text" name="descricao"
+                            id="descricao" placeholder="descrição"></textarea>
+
+                        <input ng-model="manutencao.local" ng-required="true" class="form-control" type="text" name="local" id="local" placeholder="local da manutenção">
+
+                        <input ng-model="manutencao.valor" class="form-control" type="text" name="valor" id="valor" placeholder="valor da manutenção">
+
+                        <div class="form-inline">
+                            <div class="form-group col-4">
+                                <label>Data de Entrada: </label>
+                                <input ng-model="manutencao.dataEntrada" ng-required="true" class="form-control" type="date" name="dataEntrada" id="dataEntrada"
+                                    placeholder="yyyy-MM-dd" required>
+                            </div>
+                            <div class="form-group col-4">
+                                <label>Data de Retorno: </label>
+                                <input ng-model="manutencao.dataRetorno" class="form-control" type="date" name="dataRetorno" id="dataRetorno" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="motores">motores:</label>
+                            <select id="motores" class="custom-select" ng-model="manutencao.motor" ng-required="true">
+                                <option value="">Selecione o motor</option>
+                                <option ng-repeat="motor in motores | orderBy:'nome'" ng-value="motor" ng-selected="manutencao.motor.idMotor === motor.idMotor">
+                                    {{motor.potencia}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="funcionarios">funcionário:</label>
+                            <select id="funcionarios" class="custom-select" ng-model="manutencao.funcionario" ng-required="true">
+                                <option value="">Selecione o funcionário</option>
+                                <option ng-repeat="funcionario in funcionarios | orderBy:'nome'" ng-value="funcionario" ng-selected="manutencao.funcionario.idFuncionario === funcionario.idFuncionario">
+                                    {{funcionario.nome}}
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+
+                    <div ng-messages="manutencaoForm.descricao.$error" ng-show="manutencaoForm.descricao.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'descrição'!
+                        </div>
+                        <div ng-message="minlength" class="alert alert-danger">
+                            O campo 'descrição' deve conter no minímo 3 caracteres!
+                        </div>
+                    </div>
+
+                    <div ng-messages="manutencaoForm.local.$error" ng-show="manutencaoForm.local.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'local da manutenção'!
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-success" ng-click="adicionarManutencao(manutencao)" ng-disabled="manutencaoForm.$invalid"
+                            data-dismiss="modal">Salvar Manutenção!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-inline">
+        <div class="form-row align-items-center">
+            <button ng-click="manutencao = {}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#manutencaoModal">
+                Nova Manutenção!
+            </button>
+        </div>
+    </form>
+</div>

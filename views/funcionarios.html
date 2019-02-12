@@ -1,0 +1,113 @@
+<div class="container">
+    <div style="margin-top: 10px; margin-bottom: 20px;">
+        <h4 style="text-align: center">{{tituloApp}}</h4>
+    </div>
+    <form class="form-inline my-2 my-md-0">
+        <input ng-model="criterioDeBusca" class="form-control mr-sm-2" type="search" placeholder="Busca rápida" aria-label="Busca">
+    </form>
+
+    <div class="alert-danger">{{mensagemDeErro}}</div>
+
+    <table class="table table-striped" ng-show="funcionarios.length">
+        <thead>
+            <th>Cód.</th>
+            <th>
+                <a href="" ng-click="ordenarPor('nome')">Nome</a>
+            </th>
+            <th>Telefone</th>
+            <th>Cargo</th>
+            <th>Email</th>
+            <th>Ações</th>
+        </thead>
+        <tbody>
+
+            <tr ng-repeat="elemento in funcionarios | filter:criterioDeBusca | orderBy:campoParaOrdenacao:direcaoDaOrdenacao" ng-class="{'cor-linha negrito': elemento.selecionado}">
+                <td style="width: 5%">{{elemento.idFuncionario}}</td>
+                <td title="{{elemento.nome | name}}">{{elemento.nome}}</td>
+                <td>{{elemento.telefone}}</td>
+                <td>{{elemento.cargo}}</td>
+                <td>{{elemento.email}}</td>
+                <td>
+                    <a href="" ng-click="editarFuncionario(elemento)">
+                        <span style="padding: 3px;" title="Editar funcionario" class="fa fa-pencil" data-toggle="modal" data-target="#funcionarioModal"></span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4 style="text-align: center" ng-show="!funcionarios.length">Não existem funcionários cadastrados no sistema! Clique em 'Novo Funcionário' para adicionar!</h4>
+
+    <div class="modal fade" id="funcionarioModal" tabindex="-1" role="dialog" aria-labelledby="funcionarioModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog" role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="motorModalLabel">{{!funcionario.idFuncionario ? 'Adicionando Funcionário' : 'Editando Funcionário'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <form id="funcionarioForm" name="funcionarioForm">
+                        <input ng-model="funcionario.nome" ng-required="true" class="form-control" type="text" name="nome" id="nome"
+                            placeholder="Nome">
+
+                        <input ng-model="funcionario.telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/" class="form-control" type="text"
+                            name="telefone" id="telefone" placeholder="Telefone">
+
+                        <input ng-model="funcionario.cargo" ng-required="true" class="form-control" type="text" name="cargo" id="cargo" placeholder="Cargo/Função">
+
+                        <input ng-model="funcionario.email" ng-required="true" class="form-control" type="text" name="email" id="email" placeholder="Email">
+                    </form>
+
+                    <div ng-messages="funcionarioForm.nome.$error" ng-show="funcionarioForm.nome.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'Nome'!
+                        </div>
+                    </div>
+
+                    <div ng-messages="funcionarioForm.telefone.$error" ng-show="funcionarioForm.telefone.$dirty">
+                        <div ng-show="funcionarioForm.telefone.$dirty && funcionarioForm.telefone.$error.required" class="alert alert-danger">
+                            Preencha o campo 'telefone'!
+                        </div>
+
+                        <div ng-show="funcionarioForm.telefone.$error.pattern" class="alert alert-danger">
+                            O campo telefone deve ter o formato DDDDD-DDDD!
+                        </div>
+                    </div>
+
+                    <div ng-messages="funcionarioForm.cargo.$error" ng-show="funcionarioForm.cargo.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'cargo/função'!
+                        </div>
+                    </div>
+
+                    <div ng-messages="funcionarioForm.email.$error" ng-show="funcionarioForm.email.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo 'e-mail'!
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" ng-click="adicionarFuncionario(funcionario)" ng-disabled="funcionarioForm.$invalid" data-dismiss="modal">Salvar Funcionário</button>    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form class="form-inline">
+        <div class="form-row align-items-center">
+            <button ng-click="funcionario = {}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#funcionarioModal">
+                Novo Funcionário!
+            </button>
+        </div>
+    </form>
+
+</div>

@@ -1,0 +1,84 @@
+<div class="container">
+    <div style="margin-top: 10px; margin-bottom: 20px;">
+        <h4 style="text-align: center">{{tituloApp}}</h4>
+    </div>
+    
+    <form class="form-inline my-2 my-md-0">
+        <input ng-model="criterioDeBusca" class="form-control mr-sm-2" type="search" placeholder="Busca rápida" aria-label="Busca">
+    </form>
+    <div class="alert-danger">{{mensagemDeErro}}</div>
+    
+    <table class="table table-striped" ng-show="modelos.length">
+        <thead>
+            <th style="width: 5%">
+                <a href="" ng-click="ordenarPor('idModelo')">Cód.</a>
+            </th>
+            <th>
+                <a href="" ng-click="ordenarPor('modeloCarcaca')">Nome</a>
+            </th>
+            <th>Ações</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="elemento in modelos | filter:criterioDeBusca | orderBy:campoParaOrdenacao:direcaoDaOrdenacao" ng-class="{'cor-linha negrito': elemento.selecionado}">
+                <td style="width: 5%">{{elemento.idModelo}}</td>
+                <td title="{{elemento.modeloCarcaca | name}}">{{elemento.modeloCarcaca}}</td>
+                <td>
+                    <a href="" ng-click="removerModelo(elemento)">
+                        <span style="padding: 3px;" title="Remover modelo" class="fa fa-trash"></span>
+                    </a>
+                    <a href="" ng-click="editarModelo(elemento)">
+                        <span style="padding: 3px;" title="Editar modelo" class="fa fa-pencil" data-toggle="modal" data-target="#modeloModal"></span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4 style="text-align: center" ng-show="!modelos.length">Não existem modelos de carcaças a serem demonstrados. Clique em 'Novo Modelo' para adicionar!</h4>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modeloModal" tabindex="-1" role="dialog" aria-labelledby="modeloModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modeloModalLabel">{{!modelo.idModelo ? 'Adicionando modelo' : 'Editando modelo'}}</h5>
+                    
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> 
+                </div>
+                
+                <div class="modal-body">
+                    
+                    <form id="modeloForm" name="modeloForm">
+                        <input ng-model="modelo.modeloCarcaca" ng-required="true" ng-minlength="2" class="form-control" type="text" name="modeloCarcaca" id="modeloCarcaca"
+                            placeholder="Modelo de carcaça">
+                    </form>
+
+                    <div ng-messages="modeloForm.modeloCarcaca.$error" ng-show="modeloForm.modeloCarcaca.$dirty">
+                        <div ng-message="required" class="alert alert-danger">
+                            Preencha o campo modelo de carcaça!
+                        </div>
+
+                        <div ng-message="minlength" class="alert alert-danger">
+                            O campo modelo de carcaça deve possuir no minimo 2 caracteres!
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    
+                    <button type="button" class="btn btn-success" ng-click="adicionarModelo(modelo)" ng-disabled="modeloForm.$invalid" data-dismiss="modal">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-inline">
+        <div class="form-row align-items-center">
+            <button ng-click="modelo = {}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modeloModal">
+                Novo Modelo!
+            </button>
+        </div>
+    </form>
+</div>
